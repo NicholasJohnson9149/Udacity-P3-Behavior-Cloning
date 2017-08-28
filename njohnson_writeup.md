@@ -24,6 +24,7 @@ The goals / steps of this project are the following:
 [image4]: ./write-up-img/recovery-img-02.jpg "Recovery Image right"
 [image5]: ./write-up-img/recovery-img-03.png "Recovery Image off track"
 [image6]: ./write-up-img/center_2017_08_20_23_52_40_375.jpg "Normal Image"
+
 #[image7]: ./write-up-img/placeholder_small.png "Flipped Image"
 
 ## Rubric Points
