@@ -158,10 +158,7 @@ To augment the data set, data set 6 preformed the best for training, I also flip
 
 ![alt text][image6]
 
-
-Etc ....
-
-After the collection process, I had 14,116 data points. I then preprocessed this data by using a generator function break it smaller data sets as shown in the lectures for this assignment. 
+After the collection process, I had 14,116 data points. I then preprocessed this data by using a generator function to break it smaller data sets as shown in the lectures for this assignment. This also helped when I tried to use larger data sets from more than one track. Otherwise I would overload the AWS instance I was using to train the model.   
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set and the remainder in the training set. 
 
