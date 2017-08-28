@@ -17,7 +17,7 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./write-up-img/Screenshot_from_2017-08-28_13-58-04.jpg "Model Visualization"
+[image1]: ./write-up-img/Screenshot_from_2017-08-28_13-58-04.png "Model Visualization"
 [image2]: ./write-up-img/center_2017_08_20_23_52_40_375.jpg "Center Img"
 [image3]: ./write-up-img/recovery-img-01.jpg "Recovery Image left"
 [image4]: ./write-up-img/recovery-img-02.jpg "Recovery Image right"
@@ -44,7 +44,7 @@ My project includes the following files:
 ####2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
-python drive.py model.h5
+python drive.py nvidia01.h5
 ```
 
 ####3. Submission code is usable and readable
@@ -57,6 +57,7 @@ The model.py file contains the code for training and saving the convolution neur
 
 My model consists of a convolution neural network based on Nvidia's Drive one paper - Here is the output from my Nvida.py Model used to train the car. 
 
+``` 
 Layer (type)                     Output Shape          Param #     Connected to                     
 ====================================================================================================
 lambda_1 (Lambda)                (None, 160, 320, 3)   0           lambda_input_1[0][0]             
@@ -88,6 +89,7 @@ dense_4 (Dense)                  (None, 1)             11          dense_3[0][0]
 Total params: 348,219
 Trainable params: 348,219
 Non-trainable params: 0
+```
 
 The model includes RELU layers to introduce nonlinearity nvidia.py, and the data is normalized in the model using a Keras lambda layer. 
 
