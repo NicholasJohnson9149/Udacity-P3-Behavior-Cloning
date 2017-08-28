@@ -18,13 +18,13 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./write-up-img/Screenshot from 2017-08-28 13-58-04.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image1]: ./write-up-img/Screenshot from 2017-08-28 13-58-04.jpg "Model Visualization"
+[image2]: ./write-up-img/center_2017_08_20_23_52_40_375.jpg "Center Img"
+[image3]: ./write-up-img/recovery-img-01.jpg "Recovery Image left"
+[image4]: ./write-up-img/recovery-img-02.jpg "Recovery Image right"
+[image5]: ./write-up-img/recovery-img-03.png "Recovery Image off track"
+[image6]: ./write-up-img/center_2017_08_20_23_52_40_375.jpg "Normal Image"
+#[image7]: ./write-up-img/placeholder_small.png "Flipped Image"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -144,24 +144,25 @@ To capture good driving behavior, I first recorded two laps on track one using c
 
 ![alt text][image2]
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover from over and under steering situations. These images show what a recovery looks like starting from the sides:
 
 ![alt text][image3]
 ![alt text][image4]
 ![alt text][image5]
 
-Then I repeated this process on track two in order to get more data points.
+Then I repeated this process on track two in order to get more data points. I collected 6 different data sets to try out different approaches to what data was good. Some data worked better than others in training the car to drive. I found that about 5-6 laps of data was great at training the model. This helped create more good laps than bad laps, and also allowed me to dedicate an entire lap to recovery data. I would pull the car off the the side of the road a bit and then start recoding it coming back to the center. I would then stop recording and then repeat the process for an entire lap. 
 
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
+To augment the data set, data set 6 preformed the best for training, I also flipped images and angles thinking that this would help remove the left hand turn bias, I added some randomness to the flipped images as to not create a perfectly opposing data set, here is an image that has then been flipped:
 
 ![alt text][image6]
-![alt text][image7]
+#![alt text][image7]
 
 Etc ....
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+After the collection process, I had 14,116 data points. I then preprocessed this data by using a generator function break it smaller data sets as shown in the lectures for this assignment. 
 
+I finally randomly shuffled the data set and put 20% of the data into a validation set and the remainder in the training set. 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 10 as evidenced by a graphing the epochs losses as they stabilized to a flat line. I used an adam optimizer so that manually training the learning rate wasn't necessary, this method work well enough to train the car. To grasp the learning rates effect more I should play around with a learning rate. 
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+There are a number of improvements that could be made to get the car to drive better on a sider range of environments, therefore I know some over fitting is accruing. There are a number of perimeters I could play with to achieve this and when I find more time plan to dial the model into something more robust. 

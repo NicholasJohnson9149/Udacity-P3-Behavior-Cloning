@@ -10,7 +10,7 @@ In this project, you I use what you've learned about deep neural networks and co
 
 I used a simulator where you can steer a car around a track for data collection. If someone else wants to use thsi I will add the simulator ink on a website and link to Udacity's repo aswell. The simulator uses image data and steering angles to train a neural network and then use this model to drive the car autonomously around the track.
 
-Check out the [writeup template](https://github.com/udacity/CarND-Behavioral-Cloning-P3/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The write up is included as a markdown file for the istrutors to reveiw. 
+Check out the [writesave a fliped imgp template](https://github.com/udacity/CarND-Behavioral-Cloning-P3/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The write up is included as a markdown file for the istrutors to reveiw. 
 
 This README file describes how to output the video in the "Details About Files In This Directory" section.
 

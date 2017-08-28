@@ -8,19 +8,18 @@
 #
 
 import csv
-import cv2
+import cv2nvidia 
 import numpy as np
 import os
 import sklearn
+from utils import *
+np.random.seed(0)
 
 lines = []
 with open('../data6/driving_log.csv') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
                 lines.append(line)
-
-from sklearn.model_selection import train_test_split
-train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
 images = []
 measurements = []
@@ -50,12 +49,56 @@ for image, measurement in zip(images, measurements):
         augmented_measurements.append(flipped_measurement+correction)
         augmented_measurements.append(flipped_measurement-correction)
 
-X_train = np.array(images)
-y_train = np.array(measurements)
+X_data = np.array(images)
+y_data = np.array(measurements)
 
-print('X_train shape:', X_train.shape)
-print('y_train shape:', y_train.shape)
+print('X_data:', X_data.shape)
+print('y_data:', y_data.shape)
 
+#Split Data into Traning and Validation 
+test_size = 0.2
+random_state = 0
+
+from sklearn.model_selection import train_test_split
+X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=test_size, random_state=random_state)
+print('X_train shape', X_train.shape)
+print('Y_train shape', y_train.shape)
+print('X_valid shape', X_valid.shape)
+print('y_valid shape', y_valid.shape)
+
+def generator(data_dir, image_paths, steer_angles, batch_size, is_training):
+	#    Generator to process a certain portion of the model at a time
+	#    :param data_dir: The data directory
+	#    :param image_paths: The paths to the images
+	#    :param steer_angles: The steering angles
+	#    :param batch_size: The batch size
+	#    :param is_training: Whether this is training data (True) or validation data (False)
+	
+	images = np.empty([batch_size, height, width, num_channels])
+	steering = np.empty(batch_size)
+    
+	while True:
+	    i = 0
+	    for index in np.random.permutation(image_paths.shape[0]):
+	        center, left, right = image_paths[index]
+	        steering_angle = steer_angles[index]
+
+	        if is_training and np.random.rand() < 0.6:
+	            image, steering_angle = augment_image(data_dir, center, left, right, steering_angle)
+	        else:
+	            image = load_image(data_dir, center) 
+	             
+	        image = preprocess(image)
+	            
+	        images[i] = image
+	        steering[i] = steering_angle
+
+	        i += 1
+	        if i == batch_size:
+	            break
+	                
+	    yield images, steering
+        
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Dropout, Cropping2D
 from keras.layers.convolutional import Convolution2D
@@ -69,8 +112,7 @@ layers = 3
 crop_H = 25
 crop_W = 70
 
-from sklearn.model_selection import train_test_split
-train_samples, validation_samples = train_test_split(samples, test_size=0.2)model = Sequential()
+model = Sequential()
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(video_H, viedo_L, layers)))
 model.add(Cropping2D(cropping=((crop_W, crop_H), (0,0))))
 model.add(Convolution2D(24,5,5, subsample=(2,2), activation="relu"))
@@ -91,7 +133,18 @@ model.summary()
 epoch = 10
 
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=epoch)
+model.fit(images, steering, validation_split=0.2, shuffle=True, nb_epoch=epoch)
 
 model.save('nvidia01.h5')
+
+history = model.fit_generator(generator(X_train, y_train, batch_size, True),
+                    samples_per_epoch,
+                    epoch,
+                    max_q_size=1,
+                    validation_data=generator(img_path, X_valid, y_valid, batch_size, False),
+                    nb_val_samples=len(X_valid),
+                    callbacks=[checkpoint],
+                    verbose=1)
+
+plot_results(history, 0)
 exit()
