@@ -1,6 +1,6 @@
 #**Behavioral Cloning** 
 
-##Writeup Template
+##Writeup July 2017 By Nicholas Johnson 
 
 ###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
@@ -18,7 +18,7 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
+[image1]: ./write-up-img/Screenshot from 2017-08-28 13-58-04.png "Model Visualization"
 [image2]: ./examples/placeholder.png "Grayscaling"
 [image3]: ./examples/placeholder_small.png "Recovery Image"
 [image4]: ./examples/placeholder_small.png "Recovery Image"
@@ -39,6 +39,7 @@ My project includes the following files:
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md or writeup_report.pdf summarizing the results
+* Output Viedo of It Making Around the track at 9mph <a href="https://www.youtube.com/watch?v=jLts789TEbk">YouTube Link</a>
 
 ####2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
@@ -54,25 +55,62 @@ The model.py file contains the code for training and saving the convolution neur
 
 ####1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+My model consists of a convolution neural network based on Nvidia's Drive one paper - Here is the output from my Nvida.py Model used to train the car. 
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+Layer (type)                     Output Shape          Param #     Connected to                     
+====================================================================================================
+lambda_1 (Lambda)                (None, 160, 320, 3)   0           lambda_input_1[0][0]             
+____________________________________________________________________________________________________
+cropping2d_1 (Cropping2D)        (None, 65, 320, 3)    0           lambda_1[0][0]                   
+____________________________________________________________________________________________________
+convolution2d_1 (Convolution2D)  (None, 31, 158, 24)   1824        cropping2d_1[0][0]               
+____________________________________________________________________________________________________
+convolution2d_2 (Convolution2D)  (None, 14, 77, 36)    21636       convolution2d_1[0][0]            
+____________________________________________________________________________________________________
+convolution2d_3 (Convolution2D)  (None, 5, 37, 48)     43248       convolution2d_2[0][0]            
+____________________________________________________________________________________________________
+convolution2d_4 (Convolution2D)  (None, 3, 35, 64)     27712       convolution2d_3[0][0]            
+____________________________________________________________________________________________________
+convolution2d_5 (Convolution2D)  (None, 1, 33, 64)     36928       convolution2d_4[0][0]            
+____________________________________________________________________________________________________
+dropout_1 (Dropout)              (None, 1, 33, 64)     0           convolution2d_5[0][0]            
+____________________________________________________________________________________________________
+flatten_1 (Flatten)              (None, 2112)          0           dropout_1[0][0]                  
+____________________________________________________________________________________________________
+dense_1 (Dense)                  (None, 100)           211300      flatten_1[0][0]                  
+____________________________________________________________________________________________________
+dense_2 (Dense)                  (None, 50)            5050        dense_1[0][0]                    
+____________________________________________________________________________________________________
+dense_3 (Dense)                  (None, 10)            510         dense_2[0][0]                    
+____________________________________________________________________________________________________
+dense_4 (Dense)                  (None, 1)             11          dense_3[0][0]                    
+====================================================================================================
+Total params: 348,219
+Trainable params: 348,219
+Non-trainable params: 0
 
-####2. Attempts to reduce overfitting in the model
+The model includes RELU layers to introduce nonlinearity nvidia.py, and the data is normalized in the model using a Keras lambda layer. 
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+What is most interesting about this model is that it's relatively simple yet extremely powerful for learning new things. It's also similar in many ways to the traffic sign recognition model LeNet. 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+I first tried the LeNet model while going through the lecture videos but one David started talking about thsi paper I got excited. I read this <a href="http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf"> paper</a> a few months back deforming deciding I wanted to learn more by taking this course. watching this model take real driving input and then attempt to drive has been amazing. 
+on line degrees in computer science
+
+
+####2. Attempts to reduce over fitting in the model
+
+The model contains dropout layers in order to reduce overfitting nvidia.py line ~81. 
+
+The model was trained and validated on different data sets to ensure that the model was not overfitting. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 ####3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually, it worked really well so I believe the adam optimizers are more turned than my instances as of today. 
 
 ####4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road along with a lap going the opposite way. I found that using the larger data set often lead to what felt like over fitting. based on the results It's clear that more data and more work is needed to get a robust model capable of driving smoother. 
 
-For details about how I created the training data, see the next section. 
 
 ###Model Architecture and Training Strategy
 
@@ -80,7 +118,7 @@ For details about how I created the training data, see the next section.
 
 The overall strategy for deriving a model architecture was to ...
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+My first step was to use a convolution neural network model similar to the teh lectures, I thought this model might be appropriate because we had used it in teh past and it does very well with image and video data. The hidden layers allow for flexibility and each kernal gave opertuntes for refinement. 
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
 

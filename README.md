@@ -4,20 +4,13 @@
 
 Overview
 ---
-This repository contains starting files for the Behavioral Cloning Project.
+This repository contains Nicholas Johnson's Udacity files for the Behavioral Cloning Project.
 
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to clone driving behavior. You will train, validate and test a model using Keras. The model will output a steering angle to an autonomous vehicle.
+In this project, you I use what you've learned about deep neural networks and convolutional neural networks to clone driving behavior. I  trained, validated and tested a model using Keras. The model  output a steering angle to an autonomous vehicle and drove it around the first track..(Secound track pending more work).
 
-We have provided a simulator where you can steer a car around a track for data collection. You'll use image data and steering angles to train a neural network and then use this model to drive the car autonomously around the track.
+I used a simulator where you can steer a car around a track for data collection. If someone else wants to use thsi I will add the simulator ink on a website and link to Udacity's repo aswell. The simulator uses image data and steering angles to train a neural network and then use this model to drive the car autonomously around the track.
 
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Behavioral-Cloning-P3/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
-
-To meet specifications, the project will require submitting five files: 
-* model.py (script used to create and train the model)
-* drive.py (script to drive the car - feel free to modify this file)
-* model.h5 (a trained Keras model)
-* a report writeup file (either markdown or pdf)
-* video.mp4 (a video recording of your vehicle driving autonomously around the track for at least one full lap)
+Check out the [writeup template](https://github.com/udacity/CarND-Behavioral-Cloning-P3/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The write up is included as a markdown file for the istrutors to reveiw. 
 
 This README file describes how to output the video in the "Details About Files In This Directory" section.
 
@@ -48,6 +41,10 @@ The following resources can be found in this github repository:
 * drive.py
 * video.py
 * writeup_template.md
+* nvidia.py 
+* nicholas_writeup
+* nivida01.h5
+* working-lap.mp4 : Video of completed lap 
 
 The simulator can be downloaded from the classroom. In the classroom, we have also provided sample data that you can optionally use to help train your model.
 
@@ -107,10 +104,10 @@ Creates a video based on images found in the `run1` directory. The name of the v
 Optionally, one can specify the FPS (frames per second) of the video:
 
 ```sh
-python video.py run1 --fps 48
+python video.py run1 --fps 60
 ```
 
-Will run the video at 48 FPS. The default FPS is 60.
+Will run the video at 60 FPS. The default FPS is 60, but you can chnage it. 
 
 #### Why create a video
 
