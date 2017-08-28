@@ -15,17 +15,16 @@ The goals / steps of this project are the following:
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
-
 [//]: # (Image References)
 
-[image1]: ./write-up-img/Screenshot from 2017-08-28 13-58-04.jpg "Model Visualization"
+[image1]: ./write-up-img/Screenshot_from_2017-08-28_13-58-04.jpg "Model Visualization"
 [image2]: ./write-up-img/center_2017_08_20_23_52_40_375.jpg "Center Img"
 [image3]: ./write-up-img/recovery-img-01.jpg "Recovery Image left"
 [image4]: ./write-up-img/recovery-img-02.jpg "Recovery Image right"
 [image5]: ./write-up-img/recovery-img-03.png "Recovery Image off track"
 [image6]: ./write-up-img/center_2017_08_20_23_52_40_375.jpg "Normal Image"
 
-#[image7]: ./write-up-img/placeholder_small.png "Flipped Image"
+
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -156,7 +155,7 @@ Then I repeated this process on track two in order to get more data points. I co
 To augment the data set, data set 6 preformed the best for training, I also flipped images and angles thinking that this would help remove the left hand turn bias, I added some randomness to the flipped images as to not create a perfectly opposing data set, here is an image that has then been flipped:
 
 ![alt text][image6]
-#![alt text][image7]
+
 
 Etc ....
 
