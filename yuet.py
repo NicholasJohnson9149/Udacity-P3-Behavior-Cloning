@@ -1,8 +1,13 @@
-# Import training data
+
+# Yuet.py Model test 
 import matplotlib.pyplot as plt
 import csv
+import cv2 
 import numpy as np
-
+import os
+import h5py
+import sklearn
+from utils import *
 np.random.seed(0)
 
 def import_csv(csvfile):
@@ -38,10 +43,6 @@ for line in lines:
     
 # Make lines a numpy array
 lines = np.asarray(lines)
-    
-# Test to make sure we read that properly
-print(lines[0])
-print(lines.shape)
 
 # Split data into training and validation sets
 from sklearn.model_selection import train_test_split
@@ -56,14 +57,6 @@ test_size = 0.2
 random_state = 0
 
 X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=test_size, random_state=random_state)
-
-# Confirmation
-print(X_train.shape)
-print(y_train.shape)
-print(X_valid.shape)
-print(y_valid.shape)
-print(X_train[0])
-print(y_train[0])
 
 # Build the model
 from keras.models import Sequential
@@ -89,6 +82,9 @@ model.add(Dense(10, activation='elu'))
 model.add(Dense(1))
 
 model.summary()
+
+# Functions to process the images
+from utils import *
 
 # Build the generator
 def generator(data_dir, image_paths, steer_angles, batch_size, is_training):
@@ -157,7 +153,7 @@ num_epochs = 10
 samples_per_epoch = 20000
 learn_rate = 0.0001
 
-checkpoint = ModelCheckpoint('model-{epoch:03d}.h1',
+checkpoint = ModelCheckpoint('model-{epoch:03d}.h0',
                              monitor='val_loss',
                              verbose=0,
                              save_best_only=True,
