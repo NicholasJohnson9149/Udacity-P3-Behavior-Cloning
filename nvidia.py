@@ -11,7 +11,6 @@ import csv
 import cv2 
 import numpy as np
 import os
-import h5py
 import sklearn
 from sklearn.utils import shuffle
 np.random.seed(0)
@@ -39,15 +38,15 @@ def generator(samples, batch_size):
 					current_path = '../data7/IMG/' + name
 					image = cv2.imread(current_path)
 					images.append(image)
-				correction = 0.05 
+				correction = 0.02 
 				# Number was chosen with trail and error, I tried 1 and found the car was jerky.
 				# I saw David use 0.02 and felt it was too week at times, so I selected 0.05. 
+				# Went with 0.02 after more exirmenting
 				measurement = float(sample[3])
 				measurements.append(measurement)
 				measurements.append(measurement+correction)
 				measurements.append(measurement-correction)
 
-			# import Images 
 			augmented_images = []
 			augmented_measurements = []
 			for image, measurement in zip(images, measurements):
@@ -57,14 +56,15 @@ def generator(samples, batch_size):
 				flipped_measurement = float(measurement) * -1.0
 				augmented_images.append(flipped_image)
 				augmented_measurements.append(flipped_measurement)
-				augmented_measurements.append(flipped_measurement+correction)
-				augmented_measurements.append(flipped_measurement-correction)
+				# augmented_measurements.append(flipped_measurement+correction)
+				# augmented_measurements.append(flipped_measurement-correction)
 
 		# trim image to only see section with road 
-		X_data = np.array(augmented_images)
-		y_data = np.array(augmented_measurements)
+		X_data = np.array(images)
+		y_data = np.array(measurements)
 		print("X_train ", X_data.shape)
 		print("y_train ", y_data.shape)
+		#sklearn.utils.shuffle(X_data, y_data)
 		yield sklearn.utils.shuffle(X_data, y_data)
 
 # plot function to be called after running the model
@@ -83,12 +83,12 @@ def plot_results(history, num = 0):
     plt.show()
     plt.close()
 
-# import data 
-# samples = []
-# with open('../data7/driving_log.csv') as csvfile:
-#         reader = csv.reader(csvfile)
-#         for sample in reader:
-#                 samples.append(sample)
+#import data 
+samples = []
+with open('../data7/driving_log.csv') as csvfile:
+        reader = csv.reader(csvfile)
+        for sample in reader:
+                samples.append(sample)
 
 # images = []
 # measurements = []
@@ -105,6 +105,18 @@ def plot_results(history, num = 0):
 #         measurements.append(measurement+correction)
 #         measurements.append(measurement-correction)   
 
+# augmented_images = []
+# augmented_measurements = []
+# for image, measurement in zip(images, measurements):
+# 	augmented_images.append(image)
+# 	augmented_measurements.append(measurement)
+# 	lipped_image = cv2.flip(image, 1)
+# 	flipped_measurement = float(measurement) * -1.0
+# 	augmented_images.append(flipped_image)
+# 	augmented_measurements.append(flipped_measurement)
+# 	augmented_measurements.append(flipped_measurement+correction)
+# 	augmented_measurements.append(flipped_measurement-correction)
+
 # X_data = np.array(augmented_images)
 # y_data = np.array(augmented_measurements)
 
@@ -113,12 +125,10 @@ test_size = 0.2
 random_state = 0
 # compile and train the model using the generator function
 from sklearn.model_selection import train_test_split
-train_samples, validation_samples = train_test_split(samples,  test_size=test_size, random_state=random_state)
+train_samples, validation_samples = train_test_split(samples, test_size=test_size, random_state=random_state)
 train_generator = generator(train_samples, batch_size=32)
 validation_generator = generator(validation_samples, batch_size=32)
 
-# print('train_generator:', train_generator.shape)
-# print('validation_generator:', validation_generator.shape)
 # Make lines a numpy array
 
 # # from sklearn.model_selection import train_test_split
@@ -147,14 +157,14 @@ keep_prob = 0.5
 video_H = 160
 viedo_L = 320
 layers = 3
-crop_H = 25
-crop_W = 70
+crop_H = 40
+crop_W = 80
 
 
 model = Sequential()
 # model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(video_H, viedo_L, layers)))
 # Preprocess incoming data, centered around zero with small standard deviation 
-model.add(Lambda(lambda x: x / 255.0 - 1., input_shape=(video_H, viedo_L, layers), output_shape=(video_H, viedo_L, layers)))
+model.add(Lambda(lambda x: x / 255.0 - 1., input_shape=(video_H, viedo_L, layers), output_shape=(video_H, viedo_L,layers)))
 model.add(Cropping2D(cropping=((crop_W, crop_H), (0,0))))
 model.add(Convolution2D(24,5,5, subsample=(2,2), activation="relu"))
 model.add(Convolution2D(36,5,5, subsample=(2,2), activation="relu"))
@@ -187,17 +197,17 @@ learn_rate = 0.0001
 model.compile(loss='mse', optimizer=adam(lr=learn_rate))
 #model.fit(images, steering, validation_split=0.2, shuffle=True, nb_epoch=epoch) - Used for Orginal training 
 
-history_object = model.fit_generator(train_generator, samples_per_epoch=len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), callbacks=[checkpoint], nb_epoch=5, verbose=1)
+# history_object = model.fit_generator(train_generator, samples_per_epoch=len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), callbacks=[checkpoint], nb_epoch=5, verbose=1)
 
 # Create a model using the fit_generator  
-# history = model.fit_generator(generator(X_train, y_train, batch_size,),
-#                     samples_per_epoch,
-#                     num_epochs,
-#                     max_q_size=1,
-#                     validation_data=generator(X_valid, y_valid, batch_size),
-#                     nb_val_samples=len(X_valid),
-#                     callbacks=[checkpoint],
-#                     verbose=1)
+history = model.fit_generator(generator(X_train, y_train, batch_size,),
+                    samples_per_epoch,
+                    num_epochs,
+                    max_q_size=1,
+                    validation_data=generator(X_valid, y_valid, batch_size),
+                    nb_val_samples=len(X_valid),
+                    callbacks=[checkpoint],
+                    verbose=1)
 
 model.save('nvidia07.h5')
 plot_results(history_object, 0)

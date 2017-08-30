@@ -25,7 +25,7 @@ def generator(samples, batch_size=32):
             images = []
             angles = []
             for batch_sample in batch_samples:
-                name = './IMG/'+batch_sample[0].split('/')[-1]
+                name = './IMG/'+batch_samples[0].split('/')[-1]
                 center_image = cv2.imread(name)
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
@@ -65,8 +65,7 @@ layers = 3
 crop_H = 25
 crop_W = 70
 
-ch, row, col = 3, 80, 320  # Trimmed image format
-
+#ch, row, col = 3, 80, 320  # Trimmed image format
 model = Sequential()
 # Preprocess incoming data, centered around zero with small standard deviation 
 model.add(Lambda(lambda x: x / 255.0 - 1., input_shape=(video_H, viedo_L, layers), output_shape=(video_H, viedo_L, layers)))
