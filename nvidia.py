@@ -15,8 +15,39 @@ import sklearn
 from sklearn.utils import shuffle
 np.random.seed(0)
 
+# def generator(data_dir, image_paths, steer_angles, batch_size, is_training):
+#     """
+#     Generator to process a certain portion of the model at a time
+#     """
+#     images = np.empty([batch_size, height, width, num_channels])
+#     steering = np.empty(batch_size)
+    
+#     while True:
+#         i = 0
+#         for index in np.random.permutation(image_paths.shape[0]):
+#             center, left, right = image_paths[index]
+#             steering_angle = steer_angles[index]
+            
+#             if is_training and np.random.rand() < 0.6:
+#                 image, steering_angle = augment_image(data_dir, center, left, right, steering_angle)
+#             else:
+#                 image = load_image(data_dir, center) 
+                
+#             image = preprocess(image)
+            
+#             images[i] = image
+#             steering[i] = steering_angle
+            
+#             # debug
+#             print(image.shape)
+            
+#             i += 1
+#             if i == batch_size:
+#                 break
+                
+#         yield images, steering
 
-def generator(samples, batch_size):
+def generator(images, measurements, samples, batch_size, is_training):
 	#    Generator to process a certain portion of the model at a time
 	#    :param data_dir: The data directory
 	#    :param image_paths: The paths to the images
@@ -24,6 +55,10 @@ def generator(samples, batch_size):
 	#    :param batch_size: The batch size
 	#    :param is_training: Whether this is training data (True) or validation data (False)
 	num_samples = len(samples)
+
+	# images = np.empty([batch_size, height, width, num_channels])
+ 	# steering = np.empty(batch_size)
+
 	while 1: # Loop forever so the generator never terminates
 		shuffle(samples)
 		for offset in range(0, num_samples, batch_size):
@@ -35,17 +70,17 @@ def generator(samples, batch_size):
 				for i in range(3):
 					source_path = sample[i]
 					name = source_path.split('/')[-1]
-					current_path = '../data7/IMG/' + name
+					current_path = '../data/IMG/' + name
 					image = cv2.imread(current_path)
 					images.append(image)
-				correction = 0.02 
-				# Number was chosen with trail and error, I tried 1 and found the car was jerky.
-				# I saw David use 0.02 and felt it was too week at times, so I selected 0.05. 
-				# Went with 0.02 after more exirmenting
-				measurement = float(sample[3])
-				measurements.append(measurement)
-				measurements.append(measurement+correction)
-				measurements.append(measurement-correction)
+					correction = 0.02 
+					# Number was chosen with trail and error, I tried 1 and found the car was jerky.
+					# I saw David use 0.02 and felt it was too week at times, so I selected 0.05. 
+					# Went with 0.02 after more exirmenting
+					measurement = float(sample[3])
+					measurements.append(measurement)
+					measurements.append(measurement+correction)
+					measurements.append(measurement-correction)
 
 			augmented_images = []
 			augmented_measurements = []
@@ -55,13 +90,11 @@ def generator(samples, batch_size):
 				flipped_image = cv2.flip(image, 1)
 				flipped_measurement = float(measurement) * -1.0
 				augmented_images.append(flipped_image)
-				augmented_measurements.append(flipped_measurement)
-				# augmented_measurements.append(flipped_measurement+correction)
-				# augmented_measurements.append(flipped_measurement-correction)
+				augmented_measurements.append(flipped_measurement)			
 
 		# trim image to only see section with road 
-		X_data = np.array(images)
-		y_data = np.array(measurements)
+		X_data = np.array(augmented_images)
+		y_data = np.array(flipped_measurement)
 		print("X_train ", X_data.shape)
 		print("y_train ", y_data.shape)
 		#sklearn.utils.shuffle(X_data, y_data)
@@ -84,11 +117,11 @@ def plot_results(history, num = 0):
     plt.close()
 
 #import data 
-samples = []
-with open('../data7/driving_log.csv') as csvfile:
+lines = []
+with open('../data/driving_log.csv') as csvfile:
         reader = csv.reader(csvfile)
-        for sample in reader:
-                samples.append(sample)
+        for line in lines:
+                lines.append(line)
 
 # images = []
 # measurements = []
@@ -125,24 +158,24 @@ test_size = 0.2
 random_state = 0
 # compile and train the model using the generator function
 from sklearn.model_selection import train_test_split
-train_samples, validation_samples = train_test_split(samples, test_size=test_size, random_state=random_state)
-train_generator = generator(train_samples, batch_size=32)
-validation_generator = generator(validation_samples, batch_size=32)
+# train_samples, validation_samples = train_test_split(samples, test_size=test_size, random_state=random_state)
+# train_generator = generator(lines, images, measurmnets, train_samples, batch_size=32)
+# validation_generator = generator(validation_samples, batch_size=32)
 
 # Make lines a numpy array
 
-# # from sklearn.model_selection import train_test_split
-# X_train, X_valid, y_train, y_valid = train_test_split(samples, test_size=test_size, random_state=random_state)
-# X_train_generator = generator(X_train, batch_size=32)
-# X_validation_generator = generator(X_valid, batch_size=32)
-# y_train_generator = generator(y_train, batch_size=32)
-# y_validation_generator = generator(y_valid, batch_size=32)
+# from sklearn.model_selection import train_test_split
+X_train, X_valid, y_train, y_valid = train_test_split(samples, test_size=test_size, random_state=random_state)
+X_train_generator = generator(X_train, batch_size=32)
+X_validation_generator = generator(X_valid, batch_size=32)
+y_train_generator = generator(y_train, batch_size=32)
+y_validation_generator = generator(y_valid, batch_size=32)
 
 
-# print('X_train shape', X_train.shape)
-# print('Y_train shape', y_train.shape)
-# print('X_valid shape', X_valid.shape)
-# print('y_valid shape', y_valid.shape)
+print('X_train shape', X_train.shape)
+print('Y_train shape', y_train.shape)
+print('X_valid shape', X_valid.shape)
+print('y_valid shape', y_valid.shape)
 
 # import infomation from keras for creating the learning model
 from keras.models import Sequential
