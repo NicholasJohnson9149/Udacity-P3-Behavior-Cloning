@@ -165,3 +165,6 @@ I finally randomly shuffled the data set and put 20% of the data into a validati
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 10 as evidenced by a graphing the epochs losses as they stabilized to a flat line. I used an adam optimizer so that manually training the learning rate wasn't necessary, this method work well enough to train the car. To grasp the learning rates effect more I should play around with a learning rate. 
 
 There are a number of improvements that could be made to get the car to drive better on a sider range of environments, therefore I know some over fitting is accruing. There are a number of perimeters I could play with to achieve this and when I find more time plan to dial the model into something more robust. 
+
+#Model Notes (Added)
+I added comments to the code today. Not simple. 
