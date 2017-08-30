@@ -15,45 +15,8 @@ import sklearn
 from sklearn.utils import shuffle
 np.random.seed(0)
 
-# def generator(data_dir, image_paths, steer_angles, batch_size, is_training):
-#     """
-#     Generator to process a certain portion of the model at a time
-#     """
-#     images = np.empty([batch_size, height, width, num_channels])
-#     steering = np.empty(batch_size)
-    
-#     while True:
-#         i = 0
-#         for index in np.random.permutation(image_paths.shape[0]):
-#             center, left, right = image_paths[index]
-#             steering_angle = steer_angles[index]
-            
-#             if is_training and np.random.rand() < 0.6:
-#                 image, steering_angle = augment_image(data_dir, center, left, right, steering_angle)
-#             else:
-#                 image = load_image(data_dir, center) 
-                
-#             image = preprocess(image)
-            
-#             images[i] = image
-#             steering[i] = steering_angle
-            
-#             # debug
-#             print(image.shape)
-            
-#             i += 1
-#             if i == batch_size:
-#                 break
-                
-#         yield images, steering
-
 def generator(images, measurements, samples, batch_size, is_training):
 	#    Generator to process a certain portion of the model at a time
-	#    :param data_dir: The data directory
-	#    :param image_paths: The paths to the images
-	#    :param steer_angles: The steering angles
-	#    :param batch_size: The batch size
-	#    :param is_training: Whether this is training data (True) or validation data (False)
 	num_samples = len(samples)
 
 	# images = np.empty([batch_size, height, width, num_channels])

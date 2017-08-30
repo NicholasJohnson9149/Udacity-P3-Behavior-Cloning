@@ -20,7 +20,10 @@ for line in lines:
         current_path = '../data/IMG/' + filename
         image = cv2.imread(current_path)
         images.append(image)
-    correction = 0.05
+    correction = 0.05 
+    # Number was chosen with trail and error, I tried 1 and found the car was jerky.
+    # I saw David use 0.02 and felt it was too week at times, so I selected 0.05. 
+    # Went with 0.02 after more exirmenting
     measurement = float(line[3])
     measurements.append(measurement)
     measurements.append(measurement+correction)
