@@ -32,7 +32,7 @@ def generator(samples, batch_size):
 
 			images = []
 			measurements = []
-			for batch_sample in batch_samples:
+			for batch_samples in batch_samples:
 				for i in range(3):
 					source_path = sample[i]
 					name = source_path.split('/')[-1]
@@ -84,38 +84,57 @@ def plot_results(history, num = 0):
     plt.close()
 
 # import data 
-samples = []
-with open('../data7/driving_log.csv') as csvfile:
-        reader = csv.reader(csvfile)
-        for sample in reader:
-                samples.append(sample)
+# samples = []
+# with open('../data7/driving_log.csv') as csvfile:
+#         reader = csv.reader(csvfile)
+#         for sample in reader:
+#                 samples.append(sample)
+
+# images = []
+# measurements = []
+# for sample in samples:
+#         for i in range(3):
+#                 source_path = sample[i]
+#                 filename = source_path.split('/')[-1]
+#                 current_path = '../data7/IMG/' + filename
+#                 image = cv2.imread(current_path)
+#                 images.append(image)
+#         correction = 0.05
+#         measurement = float(sample[3])
+#         measurements.append(measurement)
+#         measurements.append(measurement+correction)
+#         measurements.append(measurement-correction)   
+
+# X_data = np.array(augmented_images)
+# y_data = np.array(augmented_measurements)
 
 # split Data into Traning and Validation 
 test_size = 0.2
 random_state = 0
 # compile and train the model using the generator function
 from sklearn.model_selection import train_test_split
-#train_samples, validation_samples = train_test_split(samples,  test_size=test_size, random_state=random_state)
-#train_generator = generator(train_samples, batch_size=32)
-#validation_generator = generator(validation_samples, batch_size=32)
+train_samples, validation_samples = train_test_split(samples,  test_size=test_size, random_state=random_state)
+train_generator = generator(train_samples, batch_size=32)
+validation_generator = generator(validation_samples, batch_size=32)
 
-#print('train_generator:', train_generator.shape)
-#print('validation_generator:', validation_generator.shape)
-#Make lines a numpy array
+# print('train_generator:', train_generator.shape)
+# print('validation_generator:', validation_generator.shape)
+# Make lines a numpy array
 
-# from sklearn.model_selection import train_test_split
-X_train, X_valid, y_train, y_valid = train_test_split(samples, test_size=test_size, random_state=random_state)
-X_train_generator = generator(X_train, batch_size=32)
-X_validation_generator = generator(X_valid, batch_size=32)
-Y_train_generator = generator(y_train, batch_size=32)
-Y_validation_generator = generator(y_valid, batch_size=32)
+# # from sklearn.model_selection import train_test_split
+# X_train, X_valid, y_train, y_valid = train_test_split(samples, test_size=test_size, random_state=random_state)
+# X_train_generator = generator(X_train, batch_size=32)
+# X_validation_generator = generator(X_valid, batch_size=32)
+# y_train_generator = generator(y_train, batch_size=32)
+# y_validation_generator = generator(y_valid, batch_size=32)
 
 
-print('X_train shape', X_train.shape)
-print('Y_train shape', y_train.shape)
-print('X_valid shape', X_valid.shape)
-print('y_valid shape', y_valid.shape)
+# print('X_train shape', X_train.shape)
+# print('Y_train shape', y_train.shape)
+# print('X_valid shape', X_valid.shape)
+# print('y_valid shape', y_valid.shape)
 
+# import infomation from keras for creating the learning model
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Dropout, Cropping2D
 from keras.layers.convolutional import Convolution2D
@@ -159,33 +178,27 @@ checkpoint = ModelCheckpoint('model-{epoch:03d}.h0',
                              mode='auto')
 
 # set constant numbers for model generation
-samples_per_epoch = 40
+batch_size = 40
 num_epochs = 10
+samples_per_epoch = 20000
 learn_rate = 0.0001
 
 # create a model and save it
 model.compile(loss='mse', optimizer=adam(lr=learn_rate))
 #model.fit(images, steering, validation_split=0.2, shuffle=True, nb_epoch=epoch) - Used for Orginal training 
-### 
 
-history_object = model.fit_generator(X_train_generator, Y_train_generator, \
-	shuffle=True 
- 	samples_per_epoch=len(X_train_samples), \
- 	validation_data=X_validation_generator, \
- 	nb_val_samples=len(X_validation_samples), \
-	callbacks=[checkpoint],
- 	nb_epoch=num_epochs,
- 	verbose=1)
+history_object = model.fit_generator(train_generator, samples_per_epoch=len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), callbacks=[checkpoint], nb_epoch=5, verbose=1)
 
-# history_object = model.fit_generator(generator(X_train, y_train, samples_per_epoch, True),
+# Create a model using the fit_generator  
+# history = model.fit_generator(generator(X_train, y_train, batch_size,),
 #                     samples_per_epoch,
 #                     num_epochs,
 #                     max_q_size=1,
-#                     validation_data=generator(img_path, train_generator, train_generator, samples_per_epoch, False),
+#                     validation_data=generator(X_valid, y_valid, batch_size),
 #                     nb_val_samples=len(X_valid),
 #                     callbacks=[checkpoint],
 #                     verbose=1)
 
-model.save('nvidia05.h5')
+model.save('nvidia07.h5')
 plot_results(history_object, 0)
 exit()

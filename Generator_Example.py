@@ -11,6 +11,7 @@ import numpy as np
 import os
 import h5py
 import sklearn
+from sklearn.utils import shuffle
 from utils import *
 np.random.seed(0)
 
@@ -56,12 +57,33 @@ from keras.layers.pooling import MaxPooling2D
 from keras.optimizers import adam
 from keras.callbacks import ModelCheckpoint
 
+# model peramiters 
+keep_prob = 0.5
+video_H = 160
+viedo_L = 320
+layers = 3
+crop_H = 25
+crop_W = 70
+
 ch, row, col = 3, 80, 320  # Trimmed image format
 
 model = Sequential()
 # Preprocess incoming data, centered around zero with small standard deviation 
-model.add(Lambda(lambda x: x/127.5 - 1., input_shape=(ch, row, col), output_shape=(ch, row, col)))
+model.add(Lambda(lambda x: x / 255.0 - 1., input_shape=(video_H, viedo_L, layers), output_shape=(video_H, viedo_L, layers)))
 #model.add("""... finish defining the rest of your model architecture here ...""")
+model.add(Cropping2D(cropping=((crop_W, crop_H), (0,0))))
+model.add(Convolution2D(24,5,5, subsample=(2,2), activation="relu"))
+model.add(Convolution2D(36,5,5, subsample=(2,2), activation="relu"))
+model.add(Convolution2D(48,5,5, subsample=(2,2), activation="relu"))
+model.add(Convolution2D(64,3,3, activation="relu"))
+model.add(Convolution2D(64,3,3, activation="relu"))
+model.add(Dropout(keep_prob))
+model.add(Flatten())
+model.add(Dense(100, activation="relu"))
+model.add(Dense(50, activation="relu"))
+model.add(Dense(10, activation="relu"))
+model.add(Dense(1))
+model.summary()
 
 model.compile(loss='mse', optimizer='adam')
 model.fit_generator(train_generator, samples_per_epoch=len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=5)
