@@ -7,11 +7,11 @@ Overview
 This repository contains Nicholas Johnson's Udacity files for the Behavioral Cloning Project.
 
 ### UPDATEED Submission Notes
-**The best video is now run1.pm4 and the model that I used to create it was clone.py which is the same as the nvidia.py other than not having teh generator fucntion to beakup data. It was working in my first submision but in mesing around with teh code i broke something and have been getting an error about tuple expected as output of generator.
+**The best video is now run1.pm4 and the model that I used to create it was clone.py which is the same as the nvidia.py other than not having teh generator fucntion to beakup data. It was working in my first submision but in mesing around with teh code i broke something and have been getting an error about tuple expected as output of generator.**
 
-**I have an open quetsion on Stackoverflow looking to fix that script. 
+**I have an open quetsion on Stackoverflow looking to fix that script.**
 
-**As for the requirmenst of thsi project I beleiev this answers teh remaing quetions. If I had more time to focus on thsi I would try and git the car to drive smoother, and predict the center of teh lane and then train teh model with taht as anouther input. Thsi I beleiev would help the car drive in a wider verieity of tracks and real world variations. 
+**As for the requirmenst of thsi project I beleiev this answers teh remaing quetions. If I had more time to focus on thsi I would try and git the car to drive smoother, and predict the center of teh lane and then train teh model with taht as anouther input. Thsi I beleiev would help the car drive in a wider verieity of tracks and real world variations.** 
 
 
 In this project,  I use what you've learned about deep neural networks and convolutional neural networks to clone driving behavior. I  trained, validated and tested a model using Keras. The model  output a steering angle to an autonomous vehicle and drove it around the first track..(Secound track pending more work).
